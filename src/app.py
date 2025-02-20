@@ -2,9 +2,15 @@ import streamlit as st
 import pandas as pd
 import os
 import numpy as np
-from plots.exceedances_per_year import exceedances_per_year
+import logging
 from utils.load_data import load_data
+from plots.exceedances_per_year import exceedances_per_year_plotly
+from plots.daily_concentrations import daily_concentrations
+from plots.monthly_concentrations import monthly_concentrations
+from plots.monthly_trend_all import monthly_trend_all
+from plots.annual_trend import annual_trend
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 PIR_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PIR', '2021-2023')
 PA1_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PA1', '2021-2023')
@@ -22,19 +28,40 @@ def main():
 
     if uploaded_file:
         data = load_data(uploaded_file)
-        st.write(data)
+        # st.write(data)
 
     elif selected_file:
         data = load_data(os.path.join(cities[selected_city], selected_file))
-        st.write(data)
+
+        emission = selected_file.split('_')[0]
+        logging.info(f'Extracted emission: {emission}')
+ 
+        # st.write(data)
+    
 
     if 'data' in locals():
-        # Plot selection
-        plot_options = ['Number of exceedances of the daily limit']
+
+        plot_options = [
+            'Daily Concentrations with Standard Deviation',
+            'Monthly Concentrations with Standard Deviation',
+            'Trend Analysis of Monthly Concentrations (All Months Combined)',
+            'Trend Analysis of Average Annual Concentration with 95% CI',
+            'Number of exceedances of the daily limit',
+        ]
+        
         selected_plot = st.selectbox("Select a plot:", plot_options)
 
-        if selected_plot == 'Number of exceedances of the daily limit':
-            exceedances_per_year(data, 'PM10')
+        if selected_plot == 'Daily Concentrations with Standard Deviation':
+            daily_concentrations(data, emission)
+        elif selected_plot == 'Monthly Concentrations with Standard Deviation':
+            monthly_concentrations(data, emission)
+        elif selected_plot == 'Trend Analysis of Monthly Concentrations (All Months Combined)':
+            monthly_trend_all(data, emission)
+        elif selected_plot == 'Number of exceedances of the daily limit':
+            exceedances_per_year_plotly(data, emission)
+        elif selected_plot == 'Trend Analysis of Average Annual Concentration with 95% CI':
+            annual_trend(data, emission)
+
 
 if __name__ == "__main__":
     main()
