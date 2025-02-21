@@ -12,11 +12,13 @@ from plots.annual_trend import annual_trend
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-PIR_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PIR', '2021-2023')
-PA1_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PA1', '2021-2023')
-PA2_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PA2', '2021-2023')
+PIR_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PIR')
+PA1_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PA1')
+PA2_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'PA2')
+SMY_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'SMY')
 
-cities = {"ΠΑΤΡΑ1" : PA1_DATA_DIR, "ΠΑΤΡΑ2" : PA2_DATA_DIR, "ΠΕΙΡΑΙΑΣ" : PIR_DATA_DIR}
+
+cities = {"ΠΑΤΡΑ1" : PA1_DATA_DIR, "ΠΑΤΡΑ2" : PA2_DATA_DIR, "ΠΕΙΡΑΙΑΣ" : PIR_DATA_DIR, "ΝΕΑ ΣΜΥΡΝΗ" : SMY_DATA_DIR}
 
 def main():
     st.title("Emissions Dashboard")
@@ -33,7 +35,7 @@ def main():
     elif selected_file:
         data = load_data(os.path.join(cities[selected_city], selected_file))
 
-        emission = selected_file.split('_')[0]
+        emission = selected_file.split('_')[1]
         logging.info(f'Extracted emission: {emission}')
  
         # st.write(data)
