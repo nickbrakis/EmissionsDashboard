@@ -1,6 +1,8 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
+
 
 def exceedances_per_year_plotly(df, emission, limit=50, threshold=35):
     df['Date'] = pd.to_datetime(df['Date'])
@@ -27,6 +29,41 @@ def exceedances_per_year_plotly(df, emission, limit=50, threshold=35):
     exceedance_days = df[df['Exceedance']]
     exceedance_days['Date'] = exceedance_days['Date'].dt.strftime('%Y-%m-%d')
 
-  # Display the filtered DataFrame below the plot without the index and excluding the 'Exceedance' column
-    st.write("Days with Exceedances:")
-    st.write(exceedance_days[['Date', 'Daily_Average']].reset_index(drop=True))
+    col1, col2 = st.columns(2)
+   
+    with col1:
+        st.write("Days with Exceedances:")
+        gb = GridOptionsBuilder.from_dataframe(exceedance_days[['Date', 'Daily_Average']])
+        gb.configure_selection('single', use_checkbox=True)
+        grid_options = gb.build()
+
+        grid_response = AgGrid(
+            exceedance_days[['Date', 'Daily_Average']].reset_index(drop=True),
+            gridOptions=grid_options,
+            update_mode=GridUpdateMode.SELECTION_CHANGED,
+            # theme='light'
+        )
+
+        selected_rows = grid_response['selected_rows']
+       
+    with col2:
+        if type(selected_rows) == type(None):
+            st.write(f"Select a date for weather info.")
+
+        elif selected_rows is not None and len(selected_rows) > 0:
+            selected_date = selected_rows.iloc[0][0]
+            st.write(f"Selected date: {selected_date}")
+
+            weather_info = get_weather_info(selected_date)  # Replace with your function to get weather info
+            st.write(f"Weather info for {selected_date}:")
+            st.write(weather_info)
+
+def get_weather_info(date):
+    # Dummy function to simulate fetching weather info
+    # Replace this with actual implementation to fetch weather data
+    return {
+        "Temperature": "20°C",
+        "Humidity": "60%",
+        "Wind Speed": "15 km/h",
+        "Condition": "Sunny"
+    }
