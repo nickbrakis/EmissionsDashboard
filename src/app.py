@@ -9,6 +9,7 @@ from plots.daily_concentrations import daily_concentrations
 from plots.monthly_concentrations import monthly_concentrations
 from plots.monthly_trend_all import monthly_trend_all
 from plots.annual_trend import annual_trend
+from plots.monthly_distribution import monthly_distribution
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -39,9 +40,10 @@ def main():
     if 'data' in locals():
 
         plot_options = [
+            'Monthly Distribution of Daily Concentrations with Monthly Means',
+            'Trend Analysis of Monthly Concentrations (All Months Combined)',
             'Daily Concentrations with Standard Deviation',
             'Monthly Concentrations with Standard Deviation',
-            'Trend Analysis of Monthly Concentrations (All Months Combined)',
             'Trend Analysis of Average Annual Concentration with 95% CI',
             'Number of exceedances of the daily limit',
         ]
@@ -50,8 +52,18 @@ def main():
         with col1:
             selected_plot = st.selectbox("Select a plot:", plot_options)
 
-
-        if selected_plot == 'Daily Concentrations with Standard Deviation':
+        if selected_plot == 'Monthly Distribution of Daily Concentrations with Monthly Means':
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            monthly_distribution(data, emission, start_year, end_year)
+        elif selected_plot == 'Daily Concentrations with Standard Deviation':
             with col2:
                 min_year = int(data['Date'].dt.year.min())
                 max_year = int(data['Date'].dt.year.max())

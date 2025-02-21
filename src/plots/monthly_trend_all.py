@@ -33,12 +33,17 @@ def monthly_trend_all(df, emission, start_year, end_year):
     trend_text = f'Trend: {slope_annual:.2f} μg/m³/year'
     ci_text = f'CI: {ci_slope_lower:.2f} to {ci_slope_upper:.2f}'
 
+    if emission == 'CO':
+        units = '(mg/m³)'
+    else:
+        units = '(μg/m³)'
+
     fig = px.line(
         monthly_avg,
         x='YearMonth',
         y='Daily_Average',
         title=f'Trend Analysis of Monthly {emission} Concentrations with 95% CI (All Months Combined)',
-        labels={'Daily_Average': f'{emission} (μg/m³)', 'YearMonth': 'Date (Year-Month)'},
+        labels={'Daily_Average': f'{emission} {units}', 'YearMonth': 'Date (Year-Month)'},
         line_shape='linear'
     )
 
