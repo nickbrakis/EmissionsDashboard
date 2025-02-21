@@ -4,9 +4,12 @@ import streamlit as st
 from scipy import stats
 import numpy as np
 
-def monthly_trend_all(df, emission):
+def monthly_trend_all(df, emission, start_year, end_year):
     df['Date'] = pd.to_datetime(df['Date'])
     df['Daily_Average'] = df.iloc[:, 1:25].mean(axis=1)
+
+    df = df[(df['Date'].dt.year >= start_year) & (df['Date'].dt.year <= end_year)]
+    
     df['YearMonth'] = df['Date'].dt.to_period('M')
 
     monthly_avg = df.groupby('YearMonth')['Daily_Average'].mean().reset_index()

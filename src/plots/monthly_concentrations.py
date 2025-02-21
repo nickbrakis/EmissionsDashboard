@@ -2,9 +2,12 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-def monthly_concentrations(df, emission):
+def monthly_concentrations(df, emission, start_year, end_year):
     df['Date'] = pd.to_datetime(df['Date'])
     df['Daily_Average'] = df.iloc[:, 1:25].mean(axis=1)
+
+    df = df[(df['Date'].dt.year >= start_year) & (df['Date'].dt.year <= end_year)]
+
     df['Month'] = df['Date'].dt.month
     monthly_data = df.groupby('Month')['Daily_Average'].agg(['mean', 'std']).reset_index()
 

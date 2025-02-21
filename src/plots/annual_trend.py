@@ -4,10 +4,13 @@ import streamlit as st
 from scipy import stats
 import numpy as np
 
-def annual_trend(df, emission):
+def annual_trend(df, emission, start_year, end_year):
     df['Date'] = pd.to_datetime(df['Date'])
     df['Year'] = df['Date'].dt.year
     df['Daily_Average'] = df.iloc[:, 1:25].mean(axis=1)
+
+    # Filter the data based on the selected date range
+    df = df[(df['Year'] >= start_year) & (df['Year'] <= end_year)]
 
     annual_means = df.groupby('Year')['Daily_Average'].mean().reset_index()
 
