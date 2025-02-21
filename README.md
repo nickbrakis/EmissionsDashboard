@@ -40,6 +40,28 @@ streamlit run src/app.py
 
 Once the application is running, you can interact with the dashboard by selecting different files and plots to visualize the data.
 
+## Docker Instructions
+
+To run the application using Docker, follow these steps:
+
+1. Build the Docker image:
+```
+docker build -t streamlit-dashboard-app .
+
+```
+2. Run the Docker container:
+```
+docker run -p 8501:8501 streamlit-dashboard-app
+
+```
+This will start the Streamlit application inside a Docker container, and you can access it by navigating to `http://localhost:8501` in your web browser.
+
+## Deployment
+
+The application is deployed and can be accessed at the following URL:
+[https://emissionsdashboard.streamlit.app/](https://emissionsdashboard.streamlit.app/)
+
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
