@@ -4,11 +4,14 @@ import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 
 
-def exceedances_per_year_plotly(df, emission, limit=50, threshold=35):
+def exceedances_per_year_plotly(df, emission, start_year, end_year, limit=50, threshold=35):
     df['Date'] = pd.to_datetime(df['Date'])
     df['Daily_Average'] = df.iloc[:, 1:25].mean(axis=1)
     df['Exceedance'] = df['Daily_Average'] > limit
     df['Year'] = df['Date'].dt.year.astype(int)
+
+    df = df[(df['Date'].dt.year >= start_year) & (df['Date'].dt.year <= end_year)]
+
     exceedances_per_year = df.groupby('Year')['Exceedance'].sum().reset_index()
 
     fig = px.bar(
@@ -59,8 +62,9 @@ def exceedances_per_year_plotly(df, emission, limit=50, threshold=35):
             st.write(weather_info)
 
 def get_weather_info(date):
-    # Dummy function to simulate fetching weather info
-    # Replace this with actual implementation to fetch weather data
+
+    st.write("Not available ... Looks like this:")
+
     return {
         "Temperature": "20°C",
         "Humidity": "60%",

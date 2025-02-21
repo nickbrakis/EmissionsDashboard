@@ -2,11 +2,13 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-def daily_concentrations(df, emission):
+def daily_concentrations(df, emission, start_year, end_year):
     df['Date'] = pd.to_datetime(df['Date'])
     df['Daily_Average'] = df.iloc[:, 1:25].mean(axis=1)
     df['Daily_Std'] = df.iloc[:, 1:25].std(axis=1)
 
+    df = df[(df['Date'].dt.year >= start_year) & (df['Date'].dt.year <= end_year)]
+    
     fig = px.line(
         df,
         x='Date',

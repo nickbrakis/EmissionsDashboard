@@ -30,7 +30,6 @@ def main():
 
     if uploaded_file:
         data = load_data(uploaded_file)
-        # st.write(data)
 
     elif selected_file:
         data = load_data(os.path.join(cities[selected_city], selected_file))
@@ -46,19 +45,68 @@ def main():
             'Trend Analysis of Average Annual Concentration with 95% CI',
             'Number of exceedances of the daily limit',
         ]
-        
-        selected_plot = st.selectbox("Select a plot:", plot_options)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            selected_plot = st.selectbox("Select a plot:", plot_options)
+
 
         if selected_plot == 'Daily Concentrations with Standard Deviation':
-            daily_concentrations(data, emission)
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            daily_concentrations(data, emission, start_year, end_year)
         elif selected_plot == 'Monthly Concentrations with Standard Deviation':
-            monthly_concentrations(data, emission)
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            monthly_concentrations(data, emission, start_year, end_year)
         elif selected_plot == 'Trend Analysis of Monthly Concentrations (All Months Combined)':
-            monthly_trend_all(data, emission)
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            monthly_trend_all(data, emission, start_year, end_year)
         elif selected_plot == 'Number of exceedances of the daily limit':
-            exceedances_per_year_plotly(data, emission)
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            exceedances_per_year_plotly(data, emission, start_year, end_year)
         elif selected_plot == 'Trend Analysis of Average Annual Concentration with 95% CI':
-            annual_trend(data, emission)
+            with col2:
+                # Add a slider for selecting the date range
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            annual_trend(data, emission, start_year, end_year)
 
 
 if __name__ == "__main__":
