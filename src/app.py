@@ -34,11 +34,7 @@ def main():
 
     elif selected_file:
         data = load_data(os.path.join(cities[selected_city], selected_file))
-
-        emission = selected_file.split('_')[1]
-        logging.info(f'Extracted emission: {emission}')
- 
-        # st.write(data)
+        emission = selected_file.split('.')[0]
     
 
     if 'data' in locals():
