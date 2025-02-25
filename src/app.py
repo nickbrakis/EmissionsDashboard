@@ -20,6 +20,7 @@ SMY_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'SMY')
 
 
 cities = {"ΠΑΤΡΑ1" : PA1_DATA_DIR, "ΠΑΤΡΑ2" : PA2_DATA_DIR, "ΠΕΙΡΑΙΑΣ" : PIR_DATA_DIR, "ΝΕΑ ΣΜΥΡΝΗ" : SMY_DATA_DIR}
+emission_limit = {'PM10' : 50, 'PM2.5' : 25, 'NO2' : 200, 'SO2' : 125, 'O3' : 180, 'CO' : 10, 'C6H6' : 5}
 
 def main():
     st.title("Emissions Dashboard")
