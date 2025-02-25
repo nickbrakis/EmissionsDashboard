@@ -10,6 +10,10 @@ from plots.monthly_concentrations import monthly_concentrations
 from plots.monthly_trend_all import monthly_trend_all
 from plots.annual_trend import annual_trend
 from plots.monthly_distribution import monthly_distribution
+from plots.annual_concentrations import annual_concentrations
+from plots.hourly_distribution import hourly_distribution
+from plots.mean_conc_by_day import mean_conc_by_day
+from plots.mean_conc_by_season import mean_conc_by_season
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -20,7 +24,7 @@ SMY_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data', 'SMY')
 
 
 cities = {"ΠΑΤΡΑ1" : PA1_DATA_DIR, "ΠΑΤΡΑ2" : PA2_DATA_DIR, "ΠΕΙΡΑΙΑΣ" : PIR_DATA_DIR, "ΝΕΑ ΣΜΥΡΝΗ" : SMY_DATA_DIR}
-emission_limit = {'PM10' : 50, 'PM2.5' : 25, 'NO2' : 200, 'SO2' : 125, 'O3' : 180, 'CO' : 10, 'C6H6' : 5}
+emission_limit = {'PM10' : 50, 'PM2.5' : 25, 'NO2' : 200, 'SO2' : 350, 'O3' : 180, 'CO' : 10, 'C6H6' : 5}
 
 def main():
     st.title("Emissions Dashboard")
@@ -42,9 +46,13 @@ def main():
 
         plot_options = [
             'Monthly Distribution of Daily Concentrations with Monthly Means',
-            'Trend Analysis of Monthly Concentrations (All Months Combined)',
+            'Annual concentrations with standard deviation',
             'Daily Concentrations with Standard Deviation',
+            'Hourly Distribution of Concentrations with Hourly Means',
             'Monthly Concentrations with Standard Deviation',
+            'Mean Concentration by Day of the Week for Each Year',
+            'Mean Concentration by Year for Each Season',
+            'Trend Analysis of Monthly Concentrations (All Months Combined)',
             'Trend Analysis of Average Annual Concentration with 95% CI',
             'Number of exceedances of the daily limit',
         ]
@@ -64,6 +72,17 @@ def main():
                     value=(min_year, max_year)
                 )
             monthly_distribution(data, emission, start_year, end_year)
+        elif selected_plot == 'Annual concentrations with standard deviation':
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            annual_concentrations(data, emission, start_year, end_year)
         elif selected_plot == 'Daily Concentrations with Standard Deviation':
             with col2:
                 min_year = int(data['Date'].dt.year.min())
@@ -75,6 +94,17 @@ def main():
                     value=(min_year, max_year)
                 )
             daily_concentrations(data, emission, start_year, end_year)
+        elif selected_plot == 'Hourly Distribution of Concentrations with Hourly Means':
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            hourly_distribution(data, emission, start_year, end_year)
         elif selected_plot == 'Monthly Concentrations with Standard Deviation':
             with col2:
                 min_year = int(data['Date'].dt.year.min())
@@ -86,6 +116,28 @@ def main():
                     value=(min_year, max_year)
                 )
             monthly_concentrations(data, emission, start_year, end_year)
+        elif selected_plot == 'Mean Concentration by Day of the Week for Each Year':
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            mean_conc_by_day(data, emission, start_year, end_year)
+        elif selected_plot == 'Mean Concentration by Year for Each Season':
+            with col2:
+                min_year = int(data['Date'].dt.year.min())
+                max_year = int(data['Date'].dt.year.max())
+                start_year, end_year = st.slider(
+                    "Select date range",
+                    min_value=min_year,
+                    max_value=max_year,
+                    value=(min_year, max_year)
+                )
+            mean_conc_by_season(data, emission, start_year, end_year)
         elif selected_plot == 'Trend Analysis of Monthly Concentrations (All Months Combined)':
             with col2:
                 min_year = int(data['Date'].dt.year.min())
@@ -107,7 +159,7 @@ def main():
                     max_value=max_year,
                     value=(min_year, max_year)
                 )
-            exceedances_per_year_plotly(data, emission, start_year, end_year)
+            exceedances_per_year_plotly(data, emission, start_year, end_year, limit=emission_limit[emission])
         elif selected_plot == 'Trend Analysis of Average Annual Concentration with 95% CI':
             with col2:
                 # Add a slider for selecting the date range
